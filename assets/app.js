@@ -219,6 +219,25 @@ document.addEventListener("DOMContentLoaded", () => {
     vinInput.removeEventListener("input", vinInputHandler); // guard against double-bind
     vinInput.addEventListener("input", vinInputHandler);
   }
+
+  /* ----- Step 3: Inject preferred field order (includes salesConsultant) ----- */
+  const form = $("#tradeForm");
+  if (form && !$("#fieldOrder")) {
+    const orderEl = document.createElement("input");
+    orderEl.type = "hidden";
+    orderEl.id = "fieldOrder";
+    orderEl.name = "fieldOrder";
+    // place consultant after email for downstream email rendering
+    const preferred = [
+      "name","email","salesConsultant","phone","vin","mileage",
+      "year","make","model","trim","extColor","intColor","keys",
+      "title","owners","accident","accidentRepair","warnings",
+      "mech","cosmetic","interior","mods","smells","service",
+      "tires","brakes","wear"
+    ];
+    orderEl.value = preferred.join(",");
+    form.appendChild(orderEl);
+  }
 });
 
 /* -------------------- Logo injection & recolor -------------------- */
@@ -270,6 +289,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ["phoneLabel", "Número de teléfono"],
     ["phoneHint", "Formato: (###) ###-####"],
     ["emailLabel", "Correo electrónico"],
+
+    /* ---- Step 2: Consultant label & placeholder ---- */
+    ["consultantLabel", "¿Quién es su asesor de ventas?"],
+    ["consultantPlaceholder", "¿Con quién ha estado trabajando?"],
+
     ["vinLabel", "VIN (obligatorio)"],
     ["vinHint", "El VIN se escribe en mayúsculas automáticamente; las letras I, O, Q no son válidas."],
     ["mileageLabel", "Kilometraje actual"],
@@ -328,6 +352,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
+
+    // Ensure the consultant input placeholder gets translated even without data-i18n
+    const sc = document.getElementById("salesConsultant");
+    if (sc && MAP_EN_ES.has("consultantPlaceholder")) {
+      sc.placeholder = MAP_EN_ES.get("consultantPlaceholder");
+    }
   }
 
   let lang = STORAGE.getItem(LANG_KEY);
@@ -454,6 +484,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   formEl.addEventListener("submit", (e) => {
     const digits = phoneEl.value.replace(/\D/g, "");
+    // Trim & normalize consultant text before submit as a nicety
+    const sc = document.getElementById("salesConsultant");
+    if (sc) sc.value = sc.value.trim();
+
     if (digits.length !== 10) {
       e.preventDefault();
       setPhoneValidity(digits);
