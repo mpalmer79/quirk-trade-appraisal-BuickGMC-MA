@@ -85,35 +85,57 @@ export async function handler(event) {
  * @returns {{subject: string, htmlBody: string, textBody: string}}
  */
 function createEmailContent(data) {
-  const included = new Set(["form-name", "company", "bot-field", "honeypot"]);
+  // Fields we NEVER want to show in the notification email
+  const OMIT = new Set([
+    "form-name",
+    "company",       // honeypot alias
+    "bot-field",     // honeypot alias
+    "honeypot",      // honeypot alias
+    "agree",         // checkbox gate only
+    "fieldOrder",    // UI helper
+    "phoneRaw",      // internal; unformatted
+    "referrer",
+    "landingPage",
+    "utmSource",
+    "utmMedium",
+    "utmCampaign",
+    "utmTerm",
+    "utmContent"
+  ]);
+
   const rows = [];
   const hasVal = (v) => v !== undefined && v !== null && String(v).trim() !== "";
 
-  // Sort keys for consistent email layout
-  Object.keys(data).sort().forEach(k => {
-    if (included.has(k)) return;
+  Object.keys(data).sort().forEach((k) => {
+    if (OMIT.has(k)) return;                 // skip internal/UI-only fields
     const v = data[k];
     if (hasVal(v)) {
       rows.push([k, Array.isArray(v) ? v.join(", ") : String(v)]);
     }
   });
 
-  const htmlEscape = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const htmlEscape = (s) =>
+    String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   const htmlBody = `
     <h2 style="margin:0 0 12px 0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;">New Trade-In Lead</h2>
     <table cellpadding="6" cellspacing="0" border="0" style="border-collapse:collapse;">
-      ${rows.map(([k, v]) => `
+      ${rows
+        .map(
+          ([k, v]) => `
         <tr>
           <th align="left" style="text-transform:capitalize;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 10px 6px 0;">${htmlEscape(k)}</th>
           <td style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 0;">${htmlEscape(v)}</td>
-        </tr>
-      `).join("")}
+        </tr>`
+        )
+        .join("")}
     </table>
   `;
 
   const textBody = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
-  const subject = `New Trade-In Lead – ${data.year || ""} ${data.make || ""} ${data.model || ""}`.replace(/\s+/g, " ").trim();
+  const subject = `New Trade-In Lead – ${data.name ? data.name + " – " : ""}${(data.year || "")} ${(data.make || "")} ${(data.model || "")}`
+    .replace(/\s+/g, " ")
+    .trim();
 
   return { subject, htmlBody, textBody };
 }
