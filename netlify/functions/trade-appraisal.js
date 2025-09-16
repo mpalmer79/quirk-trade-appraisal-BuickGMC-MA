@@ -75,6 +75,7 @@ function normalizeLead(src) {
   return {
     name:  safe(src.name),
     email: safe(src.email),
+    salesConsultant: safe(src.salesConsultant),
     phone: digits(src.phoneRaw || src.phone).slice(0, 15),
     vin:   safe((src.vin || "").toUpperCase()),
     year:  safe(src.year),
@@ -93,7 +94,7 @@ function normalizeLead(src) {
 /** Build HTML + text tables (includes all provided fields) */
 function buildEmailBodies(lead, rawData) {
   const preferred = [
-    "name","email","phone","vin","year","make","model","trim","mileage",
+    "name","email","salesConsultant","phone","vin","year","make","model","trim","mileage",
     "extColor","intColor","title","keys","owners","accident","accidentRepair",
     "warnings","mech","cosmetic","interior","mods","smells","service",
     "tires","brakes","wear","utmSource","utmMedium","utmCampaign","utmTerm","utmContent",
