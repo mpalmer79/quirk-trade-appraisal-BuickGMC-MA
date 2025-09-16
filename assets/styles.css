@@ -6,6 +6,7 @@
   --bg:#f7f7f7;
   --danger:#c1121f;
   --ok:#107a3d;
+  --wm-opacity: 0.12;  /* tweak 0.08–0.18 to taste */
 }
 
 html, body { height: 100%; }
@@ -173,7 +174,7 @@ button[disabled] { opacity:.6; cursor:not-allowed; }
   align-items:center;
   background: #fff; /* white background */
   padding:10px 14px;
-  margin bottom: 12px;
+  margin-bottom: 12px;
 }
 
 #quirkBrand {
@@ -187,7 +188,6 @@ button[disabled] { opacity:.6; cursor:not-allowed; }
   display: block;
 }
 
-}
 /* --- MOBILE ONLY: stack title above logo & keep both on the white card --- */
 @media (max-width: 600px) {
   .header-title {
@@ -221,12 +221,11 @@ button[disabled] { opacity:.6; cursor:not-allowed; }
     max-width: 90% !important;
   }
 }
-/* === Page Watermark Background (GMC – zoomed out like NH) === */
-:root { --wm-opacity: 0.12; }  /* tweak 0.08–0.18 to taste */
 
+/* === Page Watermark Background (GMC – zoomed out like NH) === */
 body.has-watermark { position: relative; }
 
-/* Zoomed-out watermark: show the whole image, no cropping */
+/* Zoomed-out watermark: show the whole image, lightly faded */
 body.has-watermark::before {
   content: "";
   position: fixed;
@@ -234,7 +233,7 @@ body.has-watermark::before {
   background-image: url("/assets/quirk-lot.png");
   background-repeat: no-repeat;
   background-position: top center;  /* sign visible near top */
-  background-size: contain;         /* <-- key change (was cover) */
+  background-size: contain;         /* show full image, no crop */
   background-color: #fff;           /* fill around the PNG */
   opacity: var(--wm-opacity);
   z-index: 0;
