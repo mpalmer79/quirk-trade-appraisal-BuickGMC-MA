@@ -85,16 +85,13 @@ export async function handler(event) {
  * @returns {{subject: string, htmlBody: string, textBody: string}}
  */
 function createEmailContent(data) {
-  // Fields we never want to show in the notification
   const OMIT = new Set([
-    "form-name",
-    "company", "bot-field", "honeypot", // honeypots
-    "agree", "fieldOrder", "phoneRaw",  // UI/internal
-    "referrer", "landingPage",
-    "utmSource", "utmMedium", "utmCampaign", "utmTerm", "utmContent"
+    "form-name","company","bot-field","honeypot",
+    "agree","fieldOrder","phoneRaw",
+    "referrer","landingPage",
+    "utmSource","utmMedium","utmCampaign","utmTerm","utmContent"
   ]);
 
-  // Friendly labels
   const LABELS = {
     name: "Full Name",
     email: "Email",
@@ -125,9 +122,9 @@ function createEmailContent(data) {
     wear: "Other Wear Items"
   };
 
+  const rows = [];
   const hasVal = (v) => v !== undefined && v !== null && String(v).trim() !== "";
 
-  const rows = [];
   Object.keys(data).sort().forEach((k) => {
     if (OMIT.has(k)) return;
     const v = data[k];
@@ -141,17 +138,14 @@ function createEmailContent(data) {
     String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
   const htmlBody = `
-    <h2 style="margin:0 0 12px 0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;">New Trade-In Lead</h2>
+    <h2>New Trade-In Lead</h2>
     <table cellpadding="6" cellspacing="0" border="0" style="border-collapse:collapse;">
-      ${rows
-        .map(
-          ([label, val]) => `
+      ${rows.map(([label, val]) => `
         <tr>
-          <th align="left" style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 10px 6px 0;">${htmlEscape(label)}</th>
-          <td style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 0;">${htmlEscape(val)}</td>
-        </tr>`
-        )
-        .join("")}
+          <th align="left">${htmlEscape(label)}</th>
+          <td>${htmlEscape(val)}</td>
+        </tr>
+      `).join("")}
     </table>
   `;
 
@@ -162,6 +156,7 @@ function createEmailContent(data) {
 
   return { subject, htmlBody, textBody };
 }
+
 
 
 /**
