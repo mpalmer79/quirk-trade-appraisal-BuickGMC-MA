@@ -235,7 +235,7 @@ body.has-watermark::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: url("/assets/quirk-lot.png") center / cover no-repeat;
+  background: url("/assets/quirk-lot.png") top center / cover no-repeat;
   opacity: var(--wm-opacity);
   z-index: 0;
   pointer-events: none; /* keep form fields clickable */
@@ -263,7 +263,7 @@ body.has-watermark form {
     background-size: contain;
     background-position: top center;
     background-color: #fff; /* fill behind the PNG */
-    opacity: 0.1;           /* slightly lighter on mobile */
+    opacity: 0.14;          /* slightly stronger on mobile */
   }
 }
 
