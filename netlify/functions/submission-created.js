@@ -85,32 +85,55 @@ export async function handler(event) {
  * @returns {{subject: string, htmlBody: string, textBody: string}}
  */
 function createEmailContent(data) {
-  // Fields we NEVER want to show in the notification email
+  // Fields we never want to show in the notification
   const OMIT = new Set([
     "form-name",
-    "company",       // honeypot alias
-    "bot-field",     // honeypot alias
-    "honeypot",      // honeypot alias
-    "agree",         // checkbox gate only
-    "fieldOrder",    // UI helper
-    "phoneRaw",      // internal; unformatted
-    "referrer",
-    "landingPage",
-    "utmSource",
-    "utmMedium",
-    "utmCampaign",
-    "utmTerm",
-    "utmContent"
+    "company", "bot-field", "honeypot", // honeypots
+    "agree", "fieldOrder", "phoneRaw",  // UI/internal
+    "referrer", "landingPage",
+    "utmSource", "utmMedium", "utmCampaign", "utmTerm", "utmContent"
   ]);
 
-  const rows = [];
+  // Friendly labels
+  const LABELS = {
+    name: "Full Name",
+    email: "Email",
+    salesConsultant: "Sales Consultant",
+    phone: "Phone Number",
+    vin: "VIN",
+    mileage: "Mileage",
+    year: "Year",
+    make: "Make",
+    model: "Model",
+    trim: "Trim",
+    title: "Title Status",
+    owners: "Number of Owners",
+    accident: "Accident",
+    accidentRepair: "Accident Repair",
+    warnings: "Warning Lights",
+    mech: "Mechanical Issues",
+    cosmetic: "Cosmetic Issues",
+    interior: "Interior Condition",
+    mods: "Aftermarket Parts / Mods",
+    smells: "Unusual Smells",
+    service: "Routine Services",
+    tires: "Tires",
+    brakes: "Brakes",
+    extColor: "Exterior Color",
+    intColor: "Interior Color",
+    keys: "Number of Keys",
+    wear: "Other Wear Items"
+  };
+
   const hasVal = (v) => v !== undefined && v !== null && String(v).trim() !== "";
 
+  const rows = [];
   Object.keys(data).sort().forEach((k) => {
-    if (OMIT.has(k)) return;                 // skip internal/UI-only fields
+    if (OMIT.has(k)) return;
     const v = data[k];
     if (hasVal(v)) {
-      rows.push([k, Array.isArray(v) ? v.join(", ") : String(v)]);
+      const label = LABELS[k] || k;
+      rows.push([label, Array.isArray(v) ? v.join(", ") : String(v)]);
     }
   });
 
@@ -122,23 +145,24 @@ function createEmailContent(data) {
     <table cellpadding="6" cellspacing="0" border="0" style="border-collapse:collapse;">
       ${rows
         .map(
-          ([k, v]) => `
+          ([label, val]) => `
         <tr>
-          <th align="left" style="text-transform:capitalize;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 10px 6px 0;">${htmlEscape(k)}</th>
-          <td style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 0;">${htmlEscape(v)}</td>
+          <th align="left" style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 10px 6px 0;">${htmlEscape(label)}</th>
+          <td style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;color:#111827;padding:6px 0;">${htmlEscape(val)}</td>
         </tr>`
         )
         .join("")}
     </table>
   `;
 
-  const textBody = rows.map(([k, v]) => `${k}: ${v}`).join("\n");
+  const textBody = rows.map(([label, val]) => `${label}: ${val}`).join("\n");
   const subject = `New Trade-In Lead – ${data.name ? data.name + " – " : ""}${(data.year || "")} ${(data.make || "")} ${(data.model || "")}`
     .replace(/\s+/g, " ")
     .trim();
 
   return { subject, htmlBody, textBody };
 }
+
 
 /**
  * Fetches uploaded files and prepares them for SendGrid attachments.
