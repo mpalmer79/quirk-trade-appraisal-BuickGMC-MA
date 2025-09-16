@@ -93,13 +93,83 @@ function normalizeLead(src) {
 
 /** Build HTML + text tables (includes all provided fields) */
 function buildEmailBodies(lead, rawData) {
+  // Display order in the email
   const preferred = [
-    "name","email","salesConsultant","phone","vin","year","make","model","trim","mileage",
-    "extColor","intColor","title","keys","owners","accident","accidentRepair",
-    "warnings","mech","cosmetic","interior","mods","smells","service",
-    "tires","brakes","wear","utmSource","utmMedium","utmCampaign","utmTerm","utmContent",
-    "referrer","landingPage","submittedAt"
+    "name",
+    "email",
+    "salesConsultant",
+    "phone",
+    "vin",
+    "mileage",
+    "year",
+    "make",
+    "model",
+    "trim",
+    "extColor",
+    "intColor",
+    "title",
+    "keys",
+    "owners",
+    "accident",
+    "accidentRepair",
+    "warnings",
+    "mech",
+    "cosmetic",
+    "interior",
+    "mods",
+    "smells",
+    "service",
+    "tires",
+    "brakes",
+    "wear",
+    "utmSource",
+    "utmMedium",
+    "utmCampaign",
+    "utmTerm",
+    "utmContent",
+    "referrer",
+    "landingPage",
+    "submittedAt"
   ];
+
+  // Pretty labels for email output
+  const LABELS = {
+    name: "Name",
+    email: "Email",
+    salesConsultant: "Sales Consultant",
+    phone: "Phone",
+    vin: "VIN",
+    mileage: "Mileage",
+    year: "Year",
+    make: "Make",
+    model: "Model",
+    trim: "Trim",
+    extColor: "Exterior Color",
+    intColor: "Interior Color",
+    title: "Title Status",
+    keys: "Number of Keys",
+    owners: "Number of Owners",
+    accident: "Accident",
+    accidentRepair: "Accident Repair",
+    warnings: "Warning Lights",
+    mech: "Mechanical Issues",
+    cosmetic: "Cosmetic Issues",
+    interior: "Interior",
+    mods: "Modifications",
+    smells: "Unusual Smells",
+    service: "Service",
+    tires: "Tires",
+    brakes: "Brakes",
+    wear: "Other Wear Items",
+    utmSource: "utmSource",
+    utmMedium: "utmMedium",
+    utmCampaign: "utmCampaign",
+    utmTerm: "utmTerm",
+    utmContent: "utmContent",
+    referrer: "Referrer",
+    landingPage: "Landing Page",
+    submittedAt: "Submitted At",
+  };
 
   const merged = { ...rawData, ...lead }; // preserve normalized
   const included = new Set();
@@ -108,7 +178,7 @@ function buildEmailBodies(lead, rawData) {
   preferred.forEach((k) => {
     const v = merged[k];
     if (v !== undefined && v !== null && String(v).trim() !== "") {
-      rows.push([k, String(v)]);
+      rows.push([LABELS[k] || k, String(v)]);
       included.add(k);
     }
   });
@@ -119,7 +189,7 @@ function buildEmailBodies(lead, rawData) {
     .forEach((k) => {
       const v = merged[k];
       if (v !== undefined && v !== null && String(v).trim() !== "") {
-        rows.push([k, String(v)]);
+        rows.push([LABELS[k] || k, String(v)]);
       }
     });
 
@@ -131,7 +201,7 @@ function buildEmailBodies(lead, rawData) {
     <table cellpadding="6" cellspacing="0" border="0" style="border-collapse:collapse;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;font-size:14px;">
       ${rows.map(([k,v]) => `
         <tr>
-          <th align="left" style="text-transform:capitalize;vertical-align:top;color:#111827;padding:6px 10px 6px 0;">${escape(k)}</th>
+          <th align="left" style="vertical-align:top;color:#111827;padding:6px 10px 6px 0;">${escape(k)}</th>
           <td style="vertical-align:top;color:#111827;padding:6px 0;">${escape(v)}</td>
         </tr>
       `).join("")}
@@ -216,7 +286,7 @@ export async function handler(event) {
       .filter(Boolean);
 
     await sg.send({
-      to: recipients,                    // ✅ now uses TO_EMAIL from Netlify
+      to: recipients,                    // ✅ uses TO_EMAIL from Netlify
       from: process.env.FROM_EMAIL,      // must be a verified sender in SendGrid
       subject: subjectLine,
       text,
