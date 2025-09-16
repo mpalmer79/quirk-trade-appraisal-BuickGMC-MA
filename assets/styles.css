@@ -221,27 +221,27 @@ button[disabled] { opacity:.6; cursor:not-allowed; }
     max-width: 90% !important;
   }
 }
-/* === Page Watermark Background === */
-:root {
-  --wm-opacity: 0.12; /* adjust between 0.08–0.18 for subtlety */
-}
+/* === Page Watermark Background (GMC – zoomed out like NH) === */
+:root { --wm-opacity: 0.12; }  /* tweak 0.08–0.18 to taste */
 
-body.has-watermark {
-  position: relative;
-}
+body.has-watermark { position: relative; }
 
-/* Fixed background watermark */
+/* Zoomed-out watermark: show the whole image, no cropping */
 body.has-watermark::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: url("/assets/quirk-lot.png") top center / cover no-repeat;
+  background-image: url("/assets/quirk-lot.png");
+  background-repeat: no-repeat;
+  background-position: top center;  /* sign visible near top */
+  background-size: contain;         /* <-- key change (was cover) */
+  background-color: #fff;           /* fill around the PNG */
   opacity: var(--wm-opacity);
   z-index: 0;
-  pointer-events: none; /* keep form fields clickable */
+  pointer-events: none;
 }
 
-/* Ensure form + content are above the watermark */
+/* Ensure content sits above the watermark */
 body.has-watermark form,
 body.has-watermark .header-title,
 body.has-watermark .section,
@@ -251,23 +251,7 @@ body.has-watermark .agreement-card {
   z-index: 1;
 }
 
-/* Optional: lighten the card background if watermark shows through */
-body.has-watermark form {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(2px);
-}
-
-/* Mobile: switch to contain so full image shows */
+/* (Optional) slightly lighter on small screens */
 @media (max-width: 768px) {
-  body.has-watermark::before {
-    background-size: contain;
-    background-position: top center;
-    background-color: #fff; /* fill behind the PNG */
-    opacity: 0.14;          /* slightly stronger on mobile */
-  }
-}
-
-/* Printing: hide watermark */
-@media print {
-  body.has-watermark::before { display: none; }
+  :root { --wm-opacity: 0.10; }
 }
