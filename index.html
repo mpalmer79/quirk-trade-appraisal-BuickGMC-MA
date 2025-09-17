@@ -7,6 +7,34 @@
 <meta content="noindex" name="robots"/>
 <link href="https://vpic.nhtsa.dot.gov" rel="preconnect"/>
 <link href="assets/styles.css?v=2" rel="stylesheet"/>
+
+<!-- Mobile-only header fix: stack logo above title and center both -->
+<style>
+  @media (max-width: 640px) {
+    .header-title{
+      display:flex;              /* ensure we can stack cleanly on phones */
+      flex-direction:column;     /* logo on top, title under it */
+      align-items:center;        /* center horizontally */
+      text-align:center;         /* center the title text */
+      gap:10px;
+    }
+    .header-title .branding{
+      width:100%;
+      display:flex;
+      justify-content:center;    /* center the green QUIRK logo */
+      margin:0;
+    }
+    #quirkBrand{
+      margin:0 auto;             /* center the branding div */
+      max-width:220px;           /* keep the logo from getting huge */
+    }
+    .header-title h1{
+      margin:0;                  /* tighten spacing under the logo */
+      text-align:center;
+      line-height:1.2;
+    }
+  }
+</style>
 </head>
 <body class="has-watermark">
 <!-- 
@@ -26,66 +54,69 @@
 <input id="utmTerm" name="utmTerm" type="hidden"/>
 <input id="utmContent" name="utmContent" type="hidden"/>
 <input id="phoneRaw" name="phoneRaw" type="hidden"/>
+
 <div class="header-title">
-<div class="branding">
-<div id="quirkBrand"></div>
+  <div class="branding">
+    <div id="quirkBrand"></div>
+  </div>
+  <h1 data-i18n="title">Sight Unseen Trade-In Appraisal</h1>
 </div>
-<h1 data-i18n="title">Sight Unseen Trade-In Appraisal</h1>
-</div>
+
 <p class="lead welcome text" data-i18n="welcome">Welcome to the Quirk Buick GMC MA Sight Unseen Appraisal Program</p>
 <p data-i18n="instructions">Please fill out this form with accurate and complete details about your vehicle. The trade-in value we provide will be honored as long as the vehicle condition matches your answers. We'll verify everything when you bring the vehicle in. If the condition differs, the offer will be adjusted accordingly.</p>
+
 <div class="utilitybar">
-<div class="left-actions">
-<button aria-live="polite" class="ghost-btn" data-i18n="decodeVinBtn" id="decodeVinBtn" type="button">
+  <div class="left-actions">
+    <button aria-live="polite" class="ghost-btn" data-i18n="decodeVinBtn" id="decodeVinBtn" type="button">
         Decode VIN &amp; Prefill
       </button>
-<button class="ghost-btn" data-i18n="clearBtn" id="clearBtn" type="button">Clear Form</button>
+    <button class="ghost-btn" data-i18n="clearBtn" id="clearBtn" type="button">Clear Form</button>
+  </div>
+  <button class="spanish-btn btn btn-green" id="langToggle" type="button">versión en español</button>
 </div>
-<button class="spanish-btn btn btn-green" id="langToggle" type="button">versión en español</button>
-</div>
+
 <div class="section">
-<h2 data-i18n="aboutYou">Tell us about Yourself</h2>
-<div class="row">
-<div>
-<label class="req" data-i18n="nameLabel" for="name">Full Name</label>
-<input autocomplete="name" id="name" name="name" required="" type="text"/>
-<div>
-<label class="req" data-i18n="phoneLabel" for="phone">Phone Number</label>
-<div class="phone-wrapper">
-  <input
-    aria-describedby="phoneHint"
-    autocomplete="tel"
-    id="phone"
-    inputmode="tel"
-    name="phone"
-    placeholder="(###) ###-####"
-    required
-    type="tel"
-    pattern="^\(\d{3}\)\s\d{3}-\d{4}$"
-  />
-</div>
-<div class="hint" data-i18n="phoneHint" id="phoneHint">
-  Enter a 10-digit US number. It will format automatically.
-</div>
-</div>
-</div>
-<div>
-<label class="req" data-i18n="emailLabel" for="email">Email Address</label>
-<input autocomplete="email" id="email" name="email" required="" type="email"/>
+  <h2 data-i18n="aboutYou">Tell us about Yourself</h2>
+  <div class="row">
+    <div>
+      <label class="req" data-i18n="nameLabel" for="name">Full Name</label>
+      <input autocomplete="name" id="name" name="name" required="" type="text"/>
+      <div>
+        <label class="req" data-i18n="phoneLabel" for="phone">Phone Number</label>
+        <div class="phone-wrapper">
+          <input
+            aria-describedby="phoneHint"
+            autocomplete="tel"
+            id="phone"
+            inputmode="tel"
+            name="phone"
+            placeholder="(###) ###-####"
+            required
+            type="tel"
+            pattern="^\(\d{3}\)\s\d{3}-\d{4}$"
+          />
+        </div>
+        <div class="hint" data-i18n="phoneHint" id="phoneHint">
+          Enter a 10-digit US number. It will format automatically.
+        </div>
+      </div>
+    </div>
+    <div>
+      <label class="req" data-i18n="emailLabel" for="email">Email Address</label>
+      <input autocomplete="email" id="email" name="email" required="" type="email"/>
 
- <!-- Sales consultant (optional; NOT required) -->
-<label for="salesConsultant" data-i18n="consultantLabel">
-  Who is your sales consultant?
-</label>
-<input
-  id="salesConsultant"
-  name="salesConsultant"
-  type="text"
-  placeholder="Who have you been working with?"
-/>
-
-</div>
-</div>
+      <!-- Sales consultant (optional; NOT required) -->
+      <label for="salesConsultant" data-i18n="consultantLabel">
+        Who is your sales consultant?
+      </label>
+      <input
+        id="salesConsultant"
+        name="salesConsultant"
+        type="text"
+        placeholder="Who have you been working with?"
+      />
+    </div>
+  </div>
 </div>
     
 <fieldset class="section">
@@ -170,6 +201,7 @@
 <label data-i18n="accidentRepair" for="accidentRepair">If yes, was it professionally repaired?</label>
 <textarea id="accidentRepair" name="accidentRepair" placeholder="Yes / No / Details" rows="3"></textarea>
 </fieldset>
+
 <fieldset class="section">
 <legend class="visually-hidden">Vehicle Condition</legend>
 <h2 data-i18n="vehCondition">Tell us about your Vehicle</h2>
@@ -188,6 +220,7 @@
 <label data-i18n="service" for="service">Routine services up to date?</label>
 <textarea id="service" name="service" rows="2"></textarea>
 </fieldset>
+
 <fieldset class="section">
 <legend class="visually-hidden">Wearable Items Check</legend>
 <h2 data-i18n="wearables">Wearable Items Check</h2>
@@ -214,6 +247,7 @@
 <label data-i18n="wearOther" for="wear">Other Wear Items (issues?)</label>
 <textarea id="wear" name="wear" rows="2"></textarea>
 </fieldset>
+
 <fieldset class="section">
 <legend class="visually-hidden">Photo Uploads</legend>
 <h2 data-i18n="photos">Photo Uploads (Optional)</h2>
@@ -231,6 +265,7 @@
 <div aria-live="polite" class="preview-grid" id="prevDamage"></div>
 <div class="hint" data-i18n="photoHint">Max 10MB per file; 24 files total.</div>
 </fieldset>
+
 <div class="section agreement-card">
 <h2 data-i18n="finalDisclaimerTitle">Final Disclaimer</h2>
 <p class="disclaimer" data-i18n="finalDisclaimer">I confirm the information provided is accurate to the best of my knowledge. I understand that the appraisal value may change if the vehicle's actual condition does not match the details above.</p>
@@ -239,9 +274,11 @@
 <label data-i18n="agreeLabel" for="agree">I agree and confirm</label>
 </div>
 </div>
+
 <button data-i18n="submit" id="submitBtn" type="submit">Get My Trade Appraisal</button>
 <div class="smallprint">By submitting, authorization is given for Quirk Buick GMC MA to contact you about your vehicle's appraisal. We respect your privacy and will not send unwanted messages.</div>
 </form>
+
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
 <script src="assets/app.js"></script>
 </body>
