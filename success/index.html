@@ -3,70 +3,85 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title data-i18n="successTitle">Thanks! - Quirk Buick GMC</title>
+  <title data-i18n="successTitle">Thanks! - Quirk GMC</title>
   <link rel="stylesheet" href="/assets/styles.css" />
 
   <style>
-    /* Keep success card readable above the watermark */
-    body.has-watermark main {
-      position: relative;
-      z-index: 1;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(2px);
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    /* Watermark background — light white overlay so the photo shows through */
+    body.success {
+      min-height: 100vh;
+      background:
+        /* ~60% image strength via 40% white overlay */
+        linear-gradient(rgba(255,255,255,.40), rgba(255,255,255,.40)),
+        url('/assets/quirk-lot.png') center / cover no-repeat fixed;
+    }
+
+    /* Default card (mobile-first) */
+    main.success-card {
       max-width: 720px;
       margin: 40px auto;
+      background: #fff;                     /* overridden in media queries */
       padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: center;
     }
-    h1 { color: #004a2f; margin: 0 0 10px; }
-    p { margin: 0 0 18px; }
-    .btnrow {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-top: 18px;
-      flex-wrap: wrap;
+
+    /* MOBILE ONLY: small gap from the very top & 50% white card */
+    @media (max-width: 640px) {
+      main.success-card {
+        margin: 12px auto 24px;             /* little breathing room at top */
+        background: rgba(255,255,255,0.50); /* 50% white */
+        backdrop-filter: blur(1px);         /* subtle polish (supported browsers) */
+      }
     }
-    .btnrow a {
-      text-decoration: none;
-    }
-    @media (max-width: 560px){
-      .btnrow { flex-direction: column; }
-    }
-    .brand-img {
-      width: 100%;
-      max-width: 720px;
-      height: auto;
-      display: block;
-      margin: 32px auto 0;
-      cursor: pointer;
+
+    /* DESKTOP/TABLET: center card both ways & 50% white */
+    @media (min-width: 641px) {
+      body.success {
+        display: flex;
+        align-items: center;                /* vertical centering */
+        justify-content: center;            /* horizontal centering */
+        padding: 40px 16px;                 /* page breathing room */
+      }
+      main.success-card {
+        margin: 0;                          /* flex takes care of centering */
+        background: rgba(255,255,255,0.50); /* 50% white */
+        backdrop-filter: blur(1px);
+      }
     }
   </style>
 </head>
-<body class="has-watermark">
-  <main>
-    <h1 data-i18n="successHeading">Thank you!</h1>
-    <p class="lead" data-i18n="successMessage">
-      We received your trade-in details. A Quirk Buick GMC specialist will contact you shortly.
+<body class="success">
+  <main class="success-card">
+    <h1 style="text-align:center;margin:0 0 10px;color:#004a2f" data-i18n="successHeading">
+      Thank you!
+    </h1>
+    <p style="text-align:center;font-size:16px" data-i18n="successMessage">
+      We received your trade-in details. A Quirk GMC specialist will contact you shortly.
     </p>
 
-    <div class="btnrow">
-      <!-- Back to form -->
-      <a class="spanish-btn" href="/" data-i18n="submitAnother">Submit another vehicle</a>
-      <!-- Back to dealer -->
-      <a class="ghost-btn" href="https://www.quirkbuickgmcofbraintree.com" target="_blank" 
-         rel="noopener noreferrer" data-i18n="backToDealer">Back to Quirk Buick GMC</a>
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:18px">
+      <a class="spanish-btn" href="/" style="text-decoration:none" data-i18n="submitAnother">
+        Submit another vehicle
+      </a>
+      <!-- If your primary GMC site URL differs, update href below -->
+      <a class="ghost-btn" href="https://www.quirkbuickgmc.com" target="_blank" 
+         rel="noopener noreferrer" style="text-decoration:none" data-i18n="backToDealer">
+        Back to Quirk GMC
+      </a>
     </div>
 
-    <!-- Brand image link -->
-    <a id="heroLink" href="https://www.quirkbuickgmcofbraintree.com" target="_blank" rel="noopener noreferrer">
-      <img class="brand-img" src="/assets/quirkworks-new.jpg" alt="Quirk Works Logo" />
-    </a>
+    <!-- Logo inside same white card -->
+    <div style="margin-top:32px; text-align:center;">
+      <a href="https://www.quirkbuickgmc.com" target="_blank" rel="noopener noreferrer">
+        <img src="/assets/quirkworks-new.jpg" alt="Quirk Works Logo"
+             style="width:100%; max-width:720px; height:auto; display:block; margin:0 auto; cursor:pointer;" />
+      </a>
+    </div>
   </main>
 
-  <!-- Use app.js for translations if needed -->
+  <!-- Load the same app.js to enable Spanish translation -->
   <script src="/assets/app.js"></script>
 </body>
 </html>
