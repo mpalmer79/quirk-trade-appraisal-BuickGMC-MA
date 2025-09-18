@@ -3,55 +3,54 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Sight Unseen Trade-In – Quirk Buick GMC MA</title>
+<title>Sight Unseen Trade-In – Quirk GMC</title>
 <meta content="noindex" name="robots"/>
 <link href="https://vpic.nhtsa.dot.gov" rel="preconnect"/>
 <link href="assets/styles.css?v=2" rel="stylesheet"/>
 
-<!-- Mobile-only header fix: put QUIRK logo above the title and center both -->
+<!-- Mobile-only header fix: stack logo above title and center both -->
 <style>
   @media (max-width: 640px) {
     .header-title{
-      display:flex;
-      flex-direction:column;   /* stack vertically on phones */
-      align-items:center;      /* center the stack */
-      text-align:center;
+      display:flex;              /* stack on phones */
+      flex-direction:column;     /* logo on top, title under it */
+      align-items:center;        /* center horizontally */
+      text-align:center;         /* center the title text */
       gap:10px;
     }
-    /* force the logo block to appear FIRST on mobile,
-       even if the site CSS sets a different order */
     .header-title .branding{
-      order:0 !important;
       width:100%;
       display:flex;
-      justify-content:center;
+      justify-content:center;    /* center the QUIRK logo block */
       margin:0;
+    }
+    #quirkBrand{
+      margin:0 auto;             /* ensure centered */
+      max-width:220px;           /* keep the logo from getting huge */
     }
     .header-title h1{
-      order:1 !important;
-      margin:0;
+      margin:0;                  /* tighten spacing under the logo */
       line-height:1.2;
-      text-align:center;
-    }
-    /* keep the logo from getting too large on small phones */
-    #quirkBrand{
-      max-width:220px;
-      margin:0 auto;
     }
   }
 </style>
 </head>
-<body class="has-watermark">
+<body style="
+  /* Watermark background at ~80% image strength (20% white overlay) */
+  min-height:100vh;
+  background:
+    linear-gradient(rgba(255,255,255,.20), rgba(255,255,255,.20)),
+    url('/assets/quirk-lot3.webp') center / cover no-repeat fixed;
+">
 <!-- 
-    Final Version:
-    1. The 'netlify' attribute tells Netlify to process the form.
-    2. The 'action="/success/index.html"' attribute now points directly to the success file.
-  -->
+    Netlify form:
+    - Netlify will process (honeypot + serverless function)
+-->
 <form action="/.netlify/functions/trade-appraisal" enctype="multipart/form-data" id="tradeForm" method="post" netlify-honeypot="company">
-  <!-- This is the honeypot field to catch bots -->
+  <!-- Honeypot field -->
   <input autocomplete="off" name="company" style="position:absolute; left:-10000px; opacity:0; height:0; width:0;" tabindex="-1" type="text"/>
 
-  <!-- These hidden fields will be populated by app.js -->
+  <!-- Populated by app.js -->
   <input id="referrer" name="referrer" type="hidden"/>
   <input id="landingPage" name="landingPage" type="hidden"/>
   <input id="utmSource" name="utmSource" type="hidden"/>
@@ -68,7 +67,7 @@
     <h1 data-i18n="title">Sight Unseen Trade-In Appraisal</h1>
   </div>
 
-  <p class="lead welcome text" data-i18n="welcome">Welcome to the Quirk Buick GMC MA Sight Unseen Appraisal Program</p>
+  <p class="lead welcome text" data-i18n="welcome">Welcome to the Quirk GMC Sight Unseen Appraisal Program</p>
   <p data-i18n="instructions">Please fill out this form with accurate and complete details about your vehicle. The trade-in value we provide will be honored as long as the vehicle condition matches your answers. We'll verify everything when you bring the vehicle in. If the condition differs, the offer will be adjusted accordingly.</p>
 
   <div class="utilitybar">
@@ -86,35 +85,22 @@
     <div class="row">
       <div>
         <label class="req" data-i18n="nameLabel" for="name">Full Name</label>
-        <input autocomplete="name" id="name" name="name" required="" type="text"/>
+        <input autocomplete="name" id="name" name="name" required type="text"/>
         <div>
           <label class="req" data-i18n="phoneLabel" for="phone">Phone Number</label>
           <div class="phone-wrapper">
-            <input
-              aria-describedby="phoneHint"
-              autocomplete="tel"
-              id="phone"
-              inputmode="tel"
-              name="phone"
-              placeholder="(###) ###-####"
-              required
-              type="tel"
-              pattern="^\(\d{3}\)\s\d{3}-\d{4}$"
-            />
+            <input aria-describedby="phoneHint" autocomplete="tel" id="phone" inputmode="tel" name="phone" placeholder="(###) ###-####" required type="tel"/>
           </div>
-          <div class="hint" data-i18n="phoneHint" id="phoneHint">
-            Enter a 10-digit US number. It will format automatically.
-          </div>
+          <div class="hint" data-i18n="phoneHint" id="phoneHint"></div>
         </div>
       </div>
+
       <div>
         <label class="req" data-i18n="emailLabel" for="email">Email Address</label>
-        <input autocomplete="email" id="email" name="email" required="" type="email"/>
+        <input autocomplete="email" id="email" name="email" required type="email"/>
 
         <!-- Sales consultant (optional; NOT required) -->
-        <label for="salesConsultant" data-i18n="consultantLabel">
-          Who is your sales consultant?
-        </label>
+        <label for="salesConsultant" data-i18n="consultantLabel">Who is your sales consultant?</label>
         <input
           id="salesConsultant"
           name="salesConsultant"
@@ -124,39 +110,41 @@
       </div>
     </div>
   </div>
-      
+
   <fieldset class="section">
     <legend class="visually-hidden">Vehicle Details</legend>
     <h2 data-i18n="vehDetails">Vehicle Details</h2>
     <div class="row">
       <div>
         <label class="req" data-i18n="vinLabel" for="vin">VIN (required)</label>
-        <input aria-describedby="vinHint" id="vin" maxlength="17" minlength="17" name="vin" pattern="[A-HJ-NPR-Za-hj-npr-z0-9]{17}" placeholder="Enter 17 digit VIN" required="" type="text"/>
+        <input aria-describedby="vinHint" id="vin" maxlength="17" minlength="17" name="vin" pattern="[A-HJ-NPR-Za-hj-npr-z0-9]{17}" placeholder="Enter 17 digit VIN" required type="text"/>
         <div class="hint" data-i18n="vinHint" id="vinHint">VIN auto-capitalizes; letters I, O, Q are invalid.</div>
       </div>
       <div>
         <label class="req" data-i18n="mileageLabel" for="mileage">Current Mileage</label>
-        <input id="mileage" min="0" name="mileage" placeholder="e.g., 45000" required="" type="number"/>
+        <input id="mileage" min="0" name="mileage" placeholder="e.g., 45000" required type="number"/>
       </div>
     </div>
+
     <div class="row">
       <div>
         <label class="req" data-i18n="yearLabel" for="year">Year</label>
-        <select id="year" name="year" required="">
+        <select id="year" name="year" required>
           <option data-i18n="selectYear" value="">Select Year</option>
         </select>
       </div>
       <div>
         <label class="req" data-i18n="makeLabel" for="make">Make</label>
-        <select id="make" name="make" required="">
+        <select id="make" name="make" required>
           <option data-i18n="selectMake" value="">Select Make</option>
         </select>
       </div>
     </div>
+
     <div class="row">
       <div>
         <label class="req" data-i18n="modelLabel" for="model">Model</label>
-        <select id="model" name="model" required="">
+        <select id="model" name="model" required>
           <option data-i18n="selectModel" value="">Select Model</option>
         </select>
         <div aria-atomic="true" aria-live="polite" class="hint" id="modelStatus"></div>
@@ -166,6 +154,7 @@
         <input autocomplete="off" id="trim" name="trim" type="text"/>
       </div>
     </div>
+
     <div class="row">
       <div>
         <label data-i18n="extColorLabel" for="extColor">Exterior Color</label>
@@ -176,6 +165,7 @@
         <input id="intColor" name="intColor" type="text"/>
       </div>
     </div>
+
     <div class="row">
       <div>
         <label data-i18n="keysLabel" for="keys">Number of Keys Included</label>
@@ -191,6 +181,7 @@
         </select>
       </div>
     </div>
+
     <div class="row">
       <div>
         <label data-i18n="ownersLabel" for="owners">Number of Owners (estimate OK)</label>
@@ -204,6 +195,7 @@
         </select>
       </div>
     </div>
+
     <label data-i18n="accidentRepair" for="accidentRepair">If yes, was it professionally repaired?</label>
     <textarea id="accidentRepair" name="accidentRepair" placeholder="Yes / No / Details" rows="3"></textarea>
   </fieldset>
@@ -258,17 +250,21 @@
     <legend class="visually-hidden">Photo Uploads</legend>
     <h2 data-i18n="photos">Photo Uploads (Optional)</h2>
     <label data-i18n="photosExterior">Exterior Photos</label>
-    <input accept="image/*" id="photoExterior" multiple="" name="photoExterior" type="file"/>
+    <input accept="image/*" id="photoExterior" multiple name="photoExterior" type="file"/>
     <div aria-live="polite" class="preview-grid" id="prevExterior"></div>
+
     <label data-i18n="photosInterior">Interior Photos</label>
-    <input accept="image/*" id="photoInterior" multiple="" name="photoInterior" type="file"/>
+    <input accept="image/*" id="photoInterior" multiple name="photoInterior" type="file"/>
     <div aria-live="polite" class="preview-grid" id="prevInterior"></div>
+
     <label data-i18n="photosDash">Dashboard / Odometer</label>
     <input accept="image/*" id="photoDash" name="photoDash" type="file"/>
     <div aria-live="polite" class="preview-grid" id="prevDash"></div>
+
     <label data-i18n="photosDamage">Damage / Flaws</label>
-    <input accept="image/*" id="photoDamage" multiple="" name="photoDamage" type="file"/>
+    <input accept="image/*" id="photoDamage" multiple name="photoDamage" type="file"/>
     <div aria-live="polite" class="preview-grid" id="prevDamage"></div>
+
     <div class="hint" data-i18n="photoHint">Max 10MB per file; 24 files total.</div>
   </fieldset>
 
@@ -276,13 +272,13 @@
     <h2 data-i18n="finalDisclaimerTitle">Final Disclaimer</h2>
     <p class="disclaimer" data-i18n="finalDisclaimer">I confirm the information provided is accurate to the best of my knowledge. I understand that the appraisal value may change if the vehicle's actual condition does not match the details above.</p>
     <div class="checkbox-row">
-      <input id="agree" name="agree" required="" type="checkbox"/>
+      <input id="agree" name="agree" required type="checkbox"/>
       <label data-i18n="agreeLabel" for="agree">I agree and confirm</label>
     </div>
   </div>
 
   <button data-i18n="submit" id="submitBtn" type="submit">Get My Trade Appraisal</button>
-  <div class="smallprint">By submitting, authorization is given for Quirk Buick GMC MA to contact you about your vehicle's appraisal. We respect your privacy and will not send unwanted messages.</div>
+  <div class="smallprint">By submitting, authorization is given for Quirk GMC to contact you about your vehicle's appraisal. We respect your privacy and will not send unwanted messages.</div>
 </form>
 
 <div aria-live="polite" class="toast" id="toast" role="status"></div>
